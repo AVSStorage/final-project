@@ -1,0 +1,12 @@
+.menu {
+    &__item a {
+        color: black;
+        font-weight: 600;
+        font-size: 25px;
+        text-decoration: none;
+    }
+
+    &__item {
+        padding: 5px;
+    }
+}

@@ -1,0 +1,113 @@
+@mixin grid-col($col, $gutter) {
+    display: grid;
+    grid-template-columns: repeat($col, 1fr);
+    grid-auto-flow: row;
+    grid-gap: $gutter;
+}
+
+$default-grid-columns: 12;
+$default-grid-gutter: 15px;
+
+
+.grid {
+    padding: 10px;
+    @for $i from 1 through $default-grid-columns {
+        
+        > .grid__col-#{$i} {
+            @include grid-col($col: 1, $gutter: $default-grid-gutter);
+            @media (min-width: 768px) {
+                @include grid-col($col: $i, $gutter: $default-grid-gutter);
+            } 
+        }
+     
+
+        
+    }
+
+    .grid__auto {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+        grid-auto-flow: row;
+        grid-gap: $default-grid-gutter;
+    }
+}
+
+.justify-self-end {
+    justify-self: end;
+}
+
+.justify-self-start {
+    justify-self: start;
+}
+
+@mixin flex-wrap {
+    flex-wrap: wrap
+}
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column
+}
+
+@mixin flex-column-all-center {
+    @include flex-column();
+    align-items:center;
+    justify-items: center;
+}
+
+@mixin flex-column-x-center {
+    @include flex-column();
+    align-items:center;
+}
+
+@mixin flex-column-y-center {
+    @include flex-column();
+    justify-content:center;
+}
+
+@mixin flex-row {
+    display: flex;
+    @include flex-wrap();
+}
+
+@mixin flex-row-between {
+    @include flex-row();
+    justify-content: space-between;
+   
+}
+
+@mixin flex-row-x-center {
+    @include flex-row();
+    justify-content: center;
+}
+
+@mixin flex-row-y-center {
+    @include flex-row();
+    align-items: center;
+}
+
+@mixin flex-row-all-center {
+    @include flex-row();
+    justify-content: center;
+    align-items: center;
+}
+
+.d-flex-row {
+    @include flex-row();
+}
+
+.d-flex-column {
+    @include flex-column();
+}
+
+.d-flex-column-x-center {
+    @include flex-column-x-center();
+}
+
+.d-flex-column-y-center {
+    @include flex-column-y-center();
+}
+
+.flex-row-between {
+    @include flex-row-between();
+}
