@@ -1,0 +1,14 @@
+.login {
+    &__form {
+        @include flex-column-all-center();
+    }
+
+    &__container {
+        height: calc(100vh - 130px);
+    }
+
+    &__label {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+}

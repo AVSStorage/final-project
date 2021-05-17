@@ -28,6 +28,45 @@
         font-family: 'Crimson Text', serif;
         font-size: 25px;
         text-align: start;
+        text-decoration: none;
+        color: #ffffff;
+    }
+
+    &__button {
+        
+       
+        display:inline-block;
+        cursor:pointer;
+        color:#ffffff;
+        font-family:Arial;
+        font-size:17px;
+        padding:16px 48px;
+        text-decoration:none;
+        text-shadow:0px 1px 0px #2f6627;
+        margin-top: 20px;
+      
+        &--success {
+            background-color:#44c767;
+            &:hover {
+                background-color:#5cbf2a;
+            }
+          
+        }
+
+        &--danger {
+            background-color:#f1300e;
+            &:hover {
+                background-color:#c72306;
+            }
+        }
+
+        &:disabled {
+            background-color: #818180;
+            cursor: not-allowed;
+        }
+      
+    
+        
     }
 
 
@@ -51,6 +90,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
+
+        & .card__text {
+            color:#000;
+        }
     }
 
     &__back {

@@ -1,23 +1,27 @@
-import { Fragment } from 'react'
-import { Pokemon } from '../../features/pokemons/pokemon'
+import { useMemo } from 'react'
+import { IPokemons, Pokemon } from '../../redux/slices/pokemon'
 import PokemonComponent from './PokemonComponent'
 
-function PokemonGrid({pokemons, isFetching} : { pokemons: Pokemon[], isFetching: boolean}) {
-  
-    return <>
+interface IPokemnoGrid extends IPokemons {
+  isFetching: boolean
+}
 
-    <div className={"grid__auto"}>{
+function PokemonGrid ({ pokemons, isFetching } : IPokemnoGrid) {
+  const FetchComponent = useMemo(() => isFetching && (<p>Fetching more list items...</p>), [isFetching])
+  return <>
+
+    <div className={'grid__auto'}>{
             pokemons.map(function (pokemon: Pokemon) {
-    
-                return (<Fragment>
-                    <PokemonComponent isFetching={isFetching} key={pokemon.id} pokemon={pokemon} />
-                </Fragment>)
+              return (
+                  <PokemonComponent isFetching={isFetching} key={pokemon.id} pokemon={pokemon} />
+              )
             })
         }</div>
-            {isFetching && 'Fetching more list items...'}
-        
+            <div className="loading d-flex-column-x-center">
+            {FetchComponent}
+            </div>
+
         </>
-    
 }
 
 export default PokemonGrid

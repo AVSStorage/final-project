@@ -2,11 +2,15 @@
   "pokemons": [
     {
       "name": "bulbasaur",
-      "id": 1
+      "id": 1,
+      "isCatched": false,
+      "catchDate": null
     },
     {
       "name": "ivysaur",
-      "id": 2
+      "id": 2,
+      "isCatched": false,
+      "catchDate": null
     },
     {
       "name": "venusaur",
@@ -14,7 +18,9 @@
     },
     {
       "name": "charmander",
-      "id": 4
+      "id": 4,
+      "isCatched": false,
+      "catchDate": null
     },
     {
       "name": "charmeleon",
@@ -22,7 +28,9 @@
     },
     {
       "name": "charizard",
-      "id": 6
+      "id": 6,
+      "isCatched": false,
+      "catchDate": null
     },
     {
       "name": "squirtle",
@@ -134,7 +142,9 @@
     },
     {
       "name": "nidoking",
-      "id": 34
+      "id": 34,
+      "isCatched": false,
+      "catchDate": null
     },
     {
       "name": "clefairy",

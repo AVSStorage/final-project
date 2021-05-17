@@ -1,42 +1,52 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { updateComponent, Pokemon } from '../../features/pokemons/pokemon'
-import { useAppDispatch } from '../../hooks';
-import { firstLetterUpp, checkPokemonImageExist } from '../../utilities';
-type MyPokemon = {
-    pokemon: Pokemon,
+import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { updateComponent, IPokemon } from '../../redux/slices/pokemon'
+import { useAppDispatch } from '../../hooks'
+import { firstLetterUpp, getPokemonImage, PLACEHOLDER_IMAGE_PATH } from '../../utilities'
+
+interface IPokemonInterface extends IPokemon {
     isFetching: boolean
 }
 
+const CatchButton = ({ pokemon }: IPokemon) => {
+  const dispath = useAppDispatch()
+  return (
+  <button className='card__button card__button--success' disabled={pokemon.isCatched}
+  onClick={() => {
+    dispath(updateComponent({ ...pokemon, isCatched: true, catchDate: new Date().toLocaleString() }))
+  }}>catch</button>
+  )
+}
 
+function PokemonComponent ({ pokemon, isFetching }: IPokemonInterface) {
+  const [image, setImage] = useState(PLACEHOLDER_IMAGE_PATH)
+  const transformName = useMemo(() => firstLetterUpp(pokemon.name), [pokemon.name])
+  const dispath = useAppDispatch()
 
-function PokemonComponent({ pokemon,isFetching }: MyPokemon) {
-    const [image, setImage] = useState('/images/placeholder-image.png')
-    const transformName = useMemo(() => firstLetterUpp(pokemon.name), [pokemon.name])
-    const dispath = useAppDispatch();
-  
-    const CatchButton = ({isCatched}: {isCatched: boolean | undefined}) => <button disabled={isCatched} onClick={() => {
-        dispath(updateComponent({...pokemon, isCatched: true, catchDate: new Date().toLocaleString()}))}}>catch</button>
-    const button = useMemo(() =>  pokemon.isCatched ? (
+  const ButtonGroup = useMemo(() => pokemon.isCatched
+    ? (
         <>
-            <CatchButton isCatched={pokemon.isCatched}/>
-            <button onClick={() => dispath(updateComponent({...pokemon, isCatched: false, catchDate: null}))}>uncatch</button>
+            <CatchButton pokemon={pokemon} />
+            <button className="card__button card__button--danger" onClick={() =>
+              dispath(updateComponent({ ...pokemon, isCatched: false, catchDate: null }))
+               }>uncatch</button>
         </>
-    ): (
-        <CatchButton isCatched={pokemon.isCatched}/>
-    ),[pokemon.isCatched])
-    const activeClass = useMemo(() => pokemon.isCatched ? 'card flex-column card--active' : 'card flex-column',[pokemon.isCatched])
-    
-    useEffect(() => {
-        checkPokemonImageExist(pokemon.id)
-        .then((result: string) => {
-           
-            setImage(result);
-        })
-        
-    },[isFetching])
-    return (
-        
+      )
+    : (
+        <CatchButton pokemon={pokemon}/>
+      ), [pokemon.isCatched])
+
+  const activeClass = useMemo(() => pokemon.isCatched ? 'card flex-column card--active' : 'card flex-column', [pokemon.isCatched])
+
+  useEffect(() => {
+    getPokemonImage(pokemon.id)
+      .then((result: string) => {
+        setImage(result)
+      })
+  }, [isFetching])
+
+  return (
+
             <div className={activeClass}>
                 <div className="card__inner">
                     <div className="card__front">
@@ -45,13 +55,12 @@ function PokemonComponent({ pokemon,isFetching }: MyPokemon) {
                     </div>
                     <div className="card__back">
                         <Link to={`/pokemon/${pokemon.id}`} className="card__text">{transformName}</Link>
-                        {button}
-                       
+                        {ButtonGroup}
                     </div>
                 </div>
             </div>
-      
-    )
+
+  )
 }
 
-export default PokemonComponent;
+export default PokemonComponent

@@ -2,17 +2,22 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
 import { pokemonApi } from '../../api'
 
-
-// Define a type for the slice state
-export interface Pokemon {
+export type Pokemon = {
   name: string,
   id: number,
   isCatched?: boolean,
   catchDate?: string | null
 }
 
+export interface IPokemon {
+  pokemon: Pokemon
+}
 
-export const fetchPokemonsPerLimit = createAsyncThunk<Pokemon[], { page: number, limit: number }, {
+export interface IPokemons {
+  pokemons: Pokemon[]
+}
+
+export const fetchPokemonsPerLimit = createAsyncThunk<{pokemons: Pokemon[], page:number}, { page: number, limit: number }, {
 
   rejectValue: string
 }>(
@@ -20,7 +25,7 @@ export const fetchPokemonsPerLimit = createAsyncThunk<Pokemon[], { page: number,
   async ({ page, limit }, thunkApi) => {
     try {
       const response = await pokemonApi.fetchPokemonPerLimit(limit, page)
-      return (response.data) as Pokemon[]
+      return { pokemons: (response.data) as Pokemon[], page }
     } catch (error) {
       return thunkApi.rejectWithValue(error.message)
     }
@@ -44,12 +49,14 @@ export const updateComponent = createAsyncThunk<Pokemon, Pokemon, {
 interface initialStateInterface {
   items: Pokemon[],
   error: string | undefined,
-  loading: boolean
+  loading: boolean,
+  page: number
 }
 // Define the initial state using that type
 const initialState: initialStateInterface = {
   items: [],
   loading: true,
+  page: 1,
   error: ''
 }
 
@@ -61,7 +68,7 @@ export const pokemonsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPokemonsPerLimit.fulfilled, (state, action) => {
-      return {...state, items: state.items.concat(action.payload), loading: false} 
+      return { ...state, items: state.items.concat(action.payload.pokemons), loading: false, page: action.payload.page }
     })
       .addCase(fetchPokemonsPerLimit.rejected, (state, action) => {
         state.error = action.payload
@@ -71,22 +78,19 @@ export const pokemonsSlice = createSlice({
       })
       .addCase(updateComponent.fulfilled, (state, action) => {
         const index = state.items.findIndex(item => item.id === action.payload.id)
-        state.items[index] = action.payload
-        return state
+        state.items.splice(index, 1, action.payload)
       })
   }
 })
 
-
-
 export const selectPokemons = (state: RootState) => state.pokemons.items
 export const selectCatchedPokemons = (state: RootState) => state.pokemons.items.filter((item: Pokemon) => item.isCatched)
-export const paginateSelectedPokemons = (page : number,limit: number) => (state: RootState) => {
-  const catched = selectCatchedPokemons(state);
-  if (page*limit >= catched.length) {
+export const paginateSelectedPokemons = (page : number, limit: number) => (state: RootState) => {
+  const catched = selectCatchedPokemons(state)
+  if (page * limit >= catched.length) {
     return catched
   }
-  return catched.slice(0,catched.length - page*limit)
+  return catched.slice(0, catched.length - page * limit)
 }
 export const selectState = (state: RootState) => state.pokemons
 export const selectPokemon = (id: number) => (state: RootState): (Pokemon | undefined) => state.pokemons.items.find((item: Pokemon) => item.id === id)
