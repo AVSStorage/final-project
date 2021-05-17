@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "server:start": "json-server --watch db.json --port 3001",
-    "start": "yarn run server:start & yarn run frontend:start",
+    "start": "concurrently --kill-others \"yarn run server:start\" \"yarn run frontend:start\"",
     "frontend:start": "cross-env  webpack-cli serve  --mode=development --env development --open --hot",
     "build": "cross-env  webpack --mode=production --env production --progress",
     "lint": "eslint  --fix  src/**/*.{ts,tsx}"
@@ -47,6 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^4.23.0",
     "@typescript-eslint/parser": "^4.23.0",
     "babel-loader": "^8.2.2",
+    "concurrently": "^6.1.0",
     "cross-env": "^7.0.3",
     "css-loader": "^5.2.4",
     "eslint": "^7.26.0",
